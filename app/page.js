@@ -13,7 +13,7 @@ export default function Home() {
 
   const [bookings, setBookings] = useState([]);
   const [message, setMessage] = useState("");
-  const BACKEND_URL = "https://restaurant-booking-backend-cnci.onrender.com";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 
   // Fetch bookings
@@ -22,13 +22,13 @@ export default function Home() {
   }, []);
 
   const fetchBookings = async () => {
-    try {
-      const { data } = await axios.get(BACKEND_URL);
-      setBookings(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  try {
+    const { data } = await axios.get(`${API_BASE_URL}/api/bookings`); 
+    setBookings(data);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,8 +45,8 @@ export default function Home() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/bookings", formData);
-      setMessage("Booking successful!");
+       const response = await axios.post(`${API_BASE_URL}/api/bookings`, formData); 
+    setMessage("Booking successful!");
       setFormData({ name: "", contact: "", date: "", time: "", guests: 1 });
       fetchBookings();
     } catch (error) {
@@ -56,8 +56,8 @@ export default function Home() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${id}`);
-      setMessage("Booking deleted successfully!");
+      await axios.delete(`${API_BASE_URL}/api/bookings/${id}`); 
+    setMessage("Booking deleted successfully!");
       fetchBookings();
     } catch (error) {
       setMessage(error.response?.data?.message || "Error deleting booking.");
